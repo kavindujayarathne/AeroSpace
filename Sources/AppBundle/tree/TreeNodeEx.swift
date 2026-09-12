@@ -47,7 +47,12 @@ extension TreeNode {
     }
 
     var mostRecentWindowRecursive: Window? {
-        self as? Window ?? mostRecentChild?.mostRecentWindowRecursive
+        if let window = self as? Window { return window }
+        // Skip empty subtrees instead of dead ending on them
+        for child in mruChildren {
+            if let window = child.mostRecentWindowRecursive { return window }
+        }
+        return children.last?.mostRecentWindowRecursive
     }
 
     var anyLeafWindowRecursive: Window? {
